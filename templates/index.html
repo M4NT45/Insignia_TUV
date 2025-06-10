@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Homepage</title>
+    <link rel="stylesheet" href="../static/styles.css">
+</head>
+<body>
+    <div class="header">
+        <img src="../static/pictures/IMG_0508.jpeg" alt="Insignia Picture" class="profile-image">
+        <h1>Insignia TUV 2025/06/10</h1>
+    </div>
+    
+    <nav class="navigation">
+        <a href="{{ url_for('headlights')}}" class="nav-link">Headlight beam aim adjustment</a>
+        <a href="{{ url_for('static', filename='files/stabilizer_link.pdf') }}" class="nav-link">Stabilizer link replacement</a>
+        <a href="{{ url_for('static', filename='files/Rear Suspension.pdf') }}" class="nav-link">Rear spring replacement</a>
+        <a href="{{ url_for('static', filename='files/Disc Brakes.pdf') }}" class="nav-link">Disc brake repair</a>
+        <a> </a>
+                <a> </a>
+                        <a> </a>
+        <a href="{{ url_for('static', filename='pictures/IMG_4107.jpeg') }}" class="nav-link">Fail report</a>
+        <a href="{{ url_for('static', filename='pictures/parts.png') }}" class="nav-link">New parts</a>
+    </nav>
+</body>
+</html>

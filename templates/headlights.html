@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Headlight Aim Adjustment</title>
+    <link rel="stylesheet" href="static/styles.css">
+</head>
+<body class="headlight-body">
+    <div class="container">
+        <div class="header headlight-header">
+            <h1>🚗 Headlight Aim Adjustment</h1>
+            <img src="static/pictures/headlight_beam.gif" alt="Car Headlight Adjustment" id="headlight-image">
+        </div>
+
+        <div class="form-section">
+            <h2>📏 Enter Measurements</h2>
+            <div class="input-group">
+                <div class="input-field">
+                    <label for="headlight-height">Headlight Height (cm):</label>
+                    <input type="number" id="headlight-height" step="0.1" placeholder="e.g., 62.2">
+                </div>
+                <div class="input-field">
+                    <label for="current-beam-height">Current Beam Height on Wall (cm):</label>
+                    <input type="number" id="current-beam-height" step="0.1" placeholder="e.g., 60.5">
+                </div>
+                <div class="input-field">
+                    <label for="distance">Distance to Wall (meters):</label>
+                    <input type="number" id="distance" step="0.1" placeholder="e.g., 7.6">
+                </div>
+                <div class="input-field">
+                    <label for="target-angle">Target Beam Angle (degrees):</label>
+                    <input type="number" id="target-angle" step="0.1" value="-1" placeholder="e.g., -1.0">
+                </div>
+            </div>
+            <button class="calculate-btn" onclick="calculateBeamHeight()">🔍 Calculate Beam Position</button>
+        </div>
+
+        <div class="results-section" id="results" style="display: none;">
+            <h2>📊 Calculation Results</h2>
+            
+            <div class="result-item">
+                <div>Current Beam Angle:</div>
+                <div class="result-value" id="current-angle">-- degrees</div>
+            </div>
+            
+            <div class="result-item">
+                <div>Target Beam Height on Wall:</div>
+                <div class="result-value" id="target-beam-height">-- cm</div>
+            </div>
+            
+            <div class="result-item">
+                <div>Adjustment Needed:</div>
+                <div class="result-value" id="adjustment-direction">--</div>
+            </div>
+
+            <div class="formula-info">
+                <strong>Formula Used:</strong><br>
+                Beam Height = Headlight Height + (Distance × tan(Angle))<br>
+                <em>Standard automotive headlight aim is typically -1° to -2° below horizontal</em>
+            </div>
+        </div>
+
+        <div class="warning">
+            <strong>⚠️ Safety Notice:</strong> Proper headlight alignment is crucial for road safety. 
+            Misaligned headlights can blind oncoming drivers or provide inadequate illumination. 
+            Consider professional adjustment if unsure.
+        </div>
+    </div>
+
+    <script>
+        function calculateBeamHeight() {
+            // Get input values
+            const headlightHeight = parseFloat(document.getElementById('headlight-height').value);
+            const currentBeamHeight = parseFloat(document.getElementById('current-beam-height').value);
+            const distance = parseFloat(document.getElementById('distance').value);
+            const targetAngle = parseFloat(document.getElementById('target-angle').value);
+
+            // Validate inputs
+            if (isNaN(headlightHeight) || isNaN(currentBeamHeight) || isNaN(distance) || isNaN(targetAngle)) {
+                alert('Please enter valid numbers for all fields.');
+                return;
+            }
+
+            if (headlightHeight <= 0 || distance <= 0) {
+                alert('Height and distance must be positive values.');
+                return;
+            }
+
+            // Convert angle to radians
+            const targetAngleRadians = targetAngle * (Math.PI / 180);
+            
+            // Convert distance from meters to centimeters
+            const distanceCentimeters = distance * 100;
+            
+            // Calculate current beam angle
+            const heightDifference = headlightHeight - currentBeamHeight;
+            const currentAngleRadians = Math.atan(heightDifference / distanceCentimeters);
+            const currentAngle = currentAngleRadians * (180 / Math.PI);
+            
+            // Calculate target beam height on wall
+            const targetBeamHeight = headlightHeight + (distanceCentimeters * Math.tan(targetAngleRadians));
+            
+            // Calculate adjustment needed
+            const adjustmentNeeded = targetBeamHeight - currentBeamHeight;
+            
+            // Determine adjustment direction
+            let adjustmentDirection;
+            if (Math.abs(adjustmentNeeded) < 0.5) {
+                adjustmentDirection = 'No adjustment needed - within tolerance';
+            } else if (adjustmentNeeded > 0) {
+                adjustmentDirection = `Raise beam by ${adjustmentNeeded.toFixed(1)} cm`;
+            } else {
+                adjustmentDirection = `Lower beam by ${Math.abs(adjustmentNeeded).toFixed(1)} cm`;
+            }
+
+            // Display results
+            document.getElementById('current-angle').textContent = `${currentAngle.toFixed(2)} degrees`;
+            document.getElementById('target-beam-height').textContent = `${targetBeamHeight.toFixed(1)} cm`;
+            document.getElementById('adjustment-direction').textContent = adjustmentDirection;
+            
+            // Show results section
+            document.getElementById('results').style.display = 'block';
+            
+            // Scroll to results
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Add enter key support
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                calculateBeamHeight();
+            }
+        });
+
+        // Set default image if not found
+        document.getElementById('headlight-image').onerror = function() {
+            this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDMwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjZjNmNGY2Ii8+CjxwYXRoIGQ9Ik0xNTAgNzBMMTIwIDEzMEgxODBMMTUwIDcwWiIgZmlsbD0iI2ZmZGQzMyIvPgo8Y2lyY2xlIGN4PSIxMzAiIGN5PSIxMTAiIHI9IjgiIGZpbGw9IiNmZmZmZmYiLz4KPHR0ZXh0IHg9IjE1MCIgeT0iMTYwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNjY3ZWVhIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiPkhlYWRsaWdodCBJbWFnZTwvdGV4dD4KPC9zdmc+';
+        };
+    </script>
+</body>
+</html>
